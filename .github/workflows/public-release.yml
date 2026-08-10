@@ -1,0 +1,132 @@
+name: Verify public release
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install local verification dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[cloud,dev]'
+          python -m pip check
+
+      - name: Verify source behavior
+        run: |
+          python -m unittest discover -s tests -v
+          python -m compileall -q src tests scripts
+
+      - name: Build deterministic public candidate
+        run: python scripts/build_public_release.py --output "$RUNNER_TEMP/public-repo"
+
+      - name: Verify candidate manifest and exclusions
+        working-directory: ${{ runner.temp }}/public-repo
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path.cwd()
+          manifest = json.loads((root / "RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
+          if manifest["cloud_evidence_claimed"] is not False:
+              raise SystemExit("Public candidate must not claim managed cloud evidence")
+          records = manifest["files"]
+          expected = {record["path"] for record in records}
+          actual = {
+              path.relative_to(root).as_posix()
+              for path in root.rglob("*")
+              if path.is_file() and path.name != "RELEASE_MANIFEST.json"
+          }
+          if actual != expected:
+              raise SystemExit(f"Manifest scope mismatch: missing={expected-actual}, extra={actual-expected}")
+          for record in records:
+              path = root / record["path"]
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              if path.stat().st_size != record["bytes"] or digest != record["sha256"]:
+                  raise SystemExit(f"Manifest mismatch: {record['path']}")
+          forbidden_exact = {
+              ".env",
+              "FINAL_OWNER_HANDOFF.txt",
+              "1 - Official Devpost contest.url",
+              "2 - CockroachDB Cloud signup.url",
+              "3 - AWS Free Tier.url",
+          }
+          forbidden_prefixes = (".venv/", "artifacts/private/", "build/", "dist/")
+          for relative in actual:
+              if relative in forbidden_exact or relative.startswith(forbidden_prefixes):
+                  raise SystemExit(f"Forbidden release path: {relative}")
+          print(f"verified {len(records)} manifest-hashed files")
+          PY
+          python -m pip install -e '.[cloud,dev]'
+          python -m unittest discover -s tests -v
+          python -m compileall -q src tests scripts
+
+      - name: Build candidate Lambda container
+        run: docker build -f "$RUNNER_TEMP/public-repo/deployment/Dockerfile" -t continuity-ledger:ci "$RUNNER_TEMP/public-repo"
+
+      - name: Smoke-test Lambda health contract without credentials
+        run: |
+          docker run -d --name continuity-ledger-ci \
+            -p 127.0.0.1:18082:8080 \
+            continuity-ledger:ci
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent \
+              -X POST http://127.0.0.1:18082/2015-03-31/functions/function/invocations \
+              -H 'content-type: application/json' \
+              --data '{"rawPath":"/healthz","requestContext":{"http":{"method":"GET"}}}' \
+              >/tmp/health.json; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              docker logs continuity-ledger-ci
+              exit 1
+            fi
+            sleep 1
+          done
+          python - <<'PY'
+          import json
+
+          response = json.load(open("/tmp/health.json", encoding="utf-8"))
+          body = json.loads(response["body"])
+          assert response["statusCode"] == 200
+          assert body == {"status": "ok", "mode": "synthetic-only"}
+          PY
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs continuity-ledger-ci || true
+
+      - name: Remove smoke container
+        if: always()
+        run: docker rm -f continuity-ledger-ci || true
+
+      - name: Upload manifest only
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-release-manifest
+          path: ${{ runner.temp }}/public-repo/RELEASE_MANIFEST.json
+          if-no-files-found: error
+          retention-days: 7

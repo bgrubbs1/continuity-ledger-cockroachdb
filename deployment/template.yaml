@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Continuity Ledger synthetic-only contest deployment
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    NoEcho: true
+    Description: Contest-only CockroachDB connection string supplied at deploy time
+  JwtIssuer:
+    Type: String
+    AllowedPattern: "^https://.+"
+    Description: HTTPS issuer for the contest-only API identity provider
+  JwtAudience:
+    Type: String
+    MinLength: 1
+    Description: Audience accepted by the contest-only API
+
+Resources:
+  ContinuityLedgerApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      Auth:
+        Authorizers:
+          ContinuityJwtAuthorizer:
+            IdentitySource: $request.header.Authorization
+            JwtConfiguration:
+              issuer: !Ref JwtIssuer
+              audience:
+                - !Ref JwtAudience
+        DefaultAuthorizer: ContinuityJwtAuthorizer
+
+  ContinuityLedgerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Timeout: 15
+      MemorySize: 512
+      Environment:
+        Variables:
+          DATABASE_URL: !Ref DatabaseUrl
+          ALLOW_LOCAL_SQLITE: "false"
+      Events:
+        Health:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /healthz
+            Method: GET
+            Auth:
+              Authorizer: NONE
+        Events:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /events
+            Method: POST
+        Search:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /search
+            Method: POST
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ..
+      DockerTag: python3.12-v1

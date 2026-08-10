@@ -1,0 +1,14 @@
+.env
+.git
+.venv
+__pycache__
+*.pyc
+*.egg-info
+build
+dist
+artifacts/private
+FINAL_OWNER_HANDOFF.txt
+1 - Official Devpost contest.url
+2 - CockroachDB Cloud signup.url
+3 - AWS Free Tier.url
+

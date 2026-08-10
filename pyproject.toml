@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "continuity-ledger"
+version = "0.1.0"
+description = "Synthetic-only incident continuity ledger for CockroachDB and AWS"
+requires-python = ">=3.12"
+license = {file = "LICENSE"}
+authors = [{name = "Bradley Grubbs"}]
+dependencies = []
+
+[project.optional-dependencies]
+cloud = ["psycopg[binary]>=3.2,<4", "boto3>=1.35,<2"]
+dev = ["pyyaml>=6,<7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

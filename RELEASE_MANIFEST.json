@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0",
+  "artifact": "continuity-ledger-public-repository-candidate",
+  "manifest_scope": "Every candidate file except RELEASE_MANIFEST.json itself.",
+  "generated_by": "python scripts/build_public_release.py",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "bytes": 187,
+      "sha256": "af11d2d4e764c0f54a650e295892ef2b914a568fab092a3378378cd58831993b"
+    },
+    {
+      "path": ".env.example",
+      "bytes": 185,
+      "sha256": "13d73e36b16a57c108c71f4c086e562dfcafbac85b15744121be0fcbf9582674"
+    },
+    {
+      "path": ".github/workflows/public-release.yml",
+      "bytes": 4701,
+      "sha256": "6c8b13392af672ba9855b81ef2e5307990282a5668a2132e63c369e79dbabdf3"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 104,
+      "sha256": "c6173fb1d17fa9e06bb9e1eec8640cb128fb1b1e9421a4d12b3a32a129f6a7f9"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1072,
+      "sha256": "63233ae2db0c38ca9b1d2f821ed9161be9c4ac0cdefc9a6780c1b447378fe649"
+    },
+    {
+      "path": "PRIVACY_BOUNDARY.md",
+      "bytes": 865,
+      "sha256": "a5a9212801e42542abb76601b81a27df0a9b63e84f2c52c68b46e45ea519d490"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4310,
+      "sha256": "b6e86b8563ca00dffdc21d553de33842bc0b0ed275ec41422b9542c93ebd9110"
+    },
+    {
+      "path": "artifacts/public/local-cockroach-contract.json",
+      "bytes": 837,
+      "sha256": "b56f7fead23b91d6c6ca4a9c57dc6c03c51a50b6e2bc9d4843e5fe2795110a20"
+    },
+    {
+      "path": "deployment/Dockerfile",
+      "bytes": 221,
+      "sha256": "b89aee06434725a216c3b16986482e31beb33b18b7ba540fc0012e3510e9f2e7"
+    },
+    {
+      "path": "deployment/template.yaml",
+      "bytes": 1843,
+      "sha256": "5acfb729cd9e74f59d5b37a17906ee70ee15720da47bbd6371ca0a07a4cff28d"
+    },
+    {
+      "path": "docs/LOCAL_VERIFICATION_2026-08-09.md",
+      "bytes": 3068,
+      "sha256": "00ce6f2817853d1745b3e011240693014ae469c15f1714621f860a0ac5ce714e"
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 494,
+      "sha256": "9b8d2c9be70ce6ff2b39734f2fa3779d8366b8701cb0811339c0a8ff36eb9162"
+    },
+    {
+      "path": "scripts/build_public_release.py",
+      "bytes": 1157,
+      "sha256": "381d07a3554d953b16c8f5c2c8bf1a1c792f838c5900c933edc70f84f2317784"
+    },
+    {
+      "path": "scripts/verify_local_cockroach.py",
+      "bytes": 10433,
+      "sha256": "eb7b4982d3dcadcee95480016601756167962f47ea3f73b38cad07a8b0b5c59e"
+    },
+    {
+      "path": "src/continuity_ledger/__init__.py",
+      "bytes": 191,
+      "sha256": "6e2e648fee9c18b7635480e0c8bec8bd184154034c59c755b7e79c7ddcd09279"
+    },
+    {
+      "path": "src/continuity_ledger/cockroach.py",
+      "bytes": 4789,
+      "sha256": "3e39654254ab5c0b3382ca1159d781d5aa43aab010071cd1e9f45d1c77e9d27a"
+    },
+    {
+      "path": "src/continuity_ledger/embedding.py",
+      "bytes": 1194,
+      "sha256": "ceb5c35c79b8f8d66cd5f4636212903dead7fa573a8aed7fa8596ce836894040"
+    },
+    {
+      "path": "src/continuity_ledger/lambda_handler.py",
+      "bytes": 4058,
+      "sha256": "50deb26c90eae16b0297110b9424a74524ce88ea10d14a5aeffa6a98a22601f2"
+    },
+    {
+      "path": "src/continuity_ledger/mcp.py",
+      "bytes": 1094,
+      "sha256": "bc74843417a06c30350bee5c450150b77910083bc683af3b7482c16e3dd21364"
+    },
+    {
+      "path": "src/continuity_ledger/models.py",
+      "bytes": 1699,
+      "sha256": "d1954969cb5b8e2cf51a2a31f62cb8146a3569cf5ac50f0d3a6558bab29b19cf"
+    },
+    {
+      "path": "src/continuity_ledger/privacy.py",
+      "bytes": 1377,
+      "sha256": "e08ed92c5e1f3785d52b12fbc2b3c1d09e19c90fa12fcaac9e7c93412e43befe"
+    },
+    {
+      "path": "src/continuity_ledger/release.py",
+      "bytes": 4502,
+      "sha256": "b87c5d657a466c451a95fa8cc3153cb044f0d299b505705f0ce23b9b7ccd7625"
+    },
+    {
+      "path": "src/continuity_ledger/service.py",
+      "bytes": 602,
+      "sha256": "0f3e548bab18b424f9ae57772592a0aeeadbd1f85b2f85ae41f7cbd29c90a0cc"
+    },
+    {
+      "path": "src/continuity_ledger/store.py",
+      "bytes": 3301,
+      "sha256": "b7fbce508970244cbf26a28f16d53b487744f845e3ed97177bf74364436785fd"
+    },
+    {
+      "path": "tests/test_continuity_ledger.py",
+      "bytes": 9200,
+      "sha256": "4cc350b32586703bd8d7d3faee873702271949907af65ee86ae3dff3e83afc38"
+    },
+    {
+      "path": "tests/test_deployment_contract.py",
+      "bytes": 2105,
+      "sha256": "3ec3eb7cedffd59220d03632e03103eebe20db2b21b985bc0f5873009b5ed80c"
+    },
+    {
+      "path": "tests/test_local_cockroach_verifier.py",
+      "bytes": 1954,
+      "sha256": "6137d1dd25f2485345625d102cb15440f49dc65ede54ded60817cea975a05e6b"
+    },
+    {
+      "path": "tests/test_release.py",
+      "bytes": 6559,
+      "sha256": "3a9b43078b115245bafccfd8815c14f6948e72045468110ac97cf5f669915e52"
+    }
+  ],
+  "never_public_parts": [
+    ".git",
+    ".pytest_cache",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "private"
+  ],
+  "never_public_suffixes": [
+    ".egg-info"
+  ],
+  "cloud_evidence_claimed": false,
+  "data_boundary": "deliberately fictional incidents only"
+}

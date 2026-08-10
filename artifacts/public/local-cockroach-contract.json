@@ -1,0 +1,26 @@
+{
+  "assertions": {
+    "idempotent_replay_blocked": true,
+    "schema_initialized": true,
+    "sequence_conflict_blocked": true,
+    "serialization_retry_verified": true,
+    "similarity_result_verified": true,
+    "tenant_isolation_preserved": true,
+    "vector_index_present": true
+  },
+  "contract": {
+    "table": "ledger_events",
+    "tenant_partition": "tenant_id",
+    "vector_dimensions": 32,
+    "vector_index": "ledger_events_embedding_idx"
+  },
+  "data_boundary": "deliberately fictional events only",
+  "image": {
+    "digest": "sha256:1073844226a6291b8a44fcb9cab5cb02035bb8fea3266dcc5dd021c0b34484a0",
+    "reference": "cockroachdb/cockroach:v26.2.3"
+  },
+  "managed_cloud_claimed": false,
+  "schema_version": "1.0",
+  "scope": "local disposable CockroachDB vector contract",
+  "verified_at": "2026-08-10T04:25:37+00:00"
+}
