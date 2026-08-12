@@ -67,7 +67,7 @@
     {
       "path": "docs/LOCAL_VERIFICATION_2026-08-11.md",
       "bytes": 2836,
-      "sha256": "22bd8badfc374a623e63bcbae60f820c9d6f9055452ab91175f47d6fa67f97a6"
+      "sha256": "ae4133c12d0c462329c8bf707bbe7c458f95514bcad7c5002cc62ed91634b08f"
     },
     {
       "path": "pyproject.toml",
@@ -151,8 +151,8 @@
     },
     {
       "path": "src/continuity_ledger/managed_evidence.py",
-      "bytes": 11666,
-      "sha256": "b1e79d154ddfa415206917489d44a934b924f8eb18d1219fd0d9b5c4ff4a80a6"
+      "bytes": 11954,
+      "sha256": "69b754bd385571c03341445cf03b94e58b9957ef6e07ae7426b446bccdcee83c"
     },
     {
       "path": "src/continuity_ledger/mcp.py",
@@ -211,8 +211,8 @@
     },
     {
       "path": "tests/test_managed_evidence.py",
-      "bytes": 7931,
-      "sha256": "b333cf37235b42b7756d322fd125376c94d7d3efd2d1bc88ba00b938ba00b22d"
+      "bytes": 9374,
+      "sha256": "037c2c9e92eb69eb68c1f5b9a9a94b3c261ebecc215f0ee2cdd5f3270d25c659"
     },
     {
       "path": "tests/test_managed_mcp.py",

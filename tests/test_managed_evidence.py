@@ -15,6 +15,7 @@ from continuity_ledger.managed_evidence import (
     verify_public_demo,
     write_managed_stack_receipt,
 )
+from continuity_ledger.lambda_handler import make_handler
 from continuity_ledger.service import ContinuityService
 from continuity_ledger.store import SQLiteLedgerStore
 
@@ -145,6 +146,42 @@ class ManagedEvidenceTests(unittest.IsolatedAsyncioTestCase):
             self.assertRegex(digest, r"^[0-9a-f]{64}$")
             self.assertEqual(reopened, receipt)
             self.assertFalse(destination.with_suffix(".json.tmp").exists())
+
+    async def test_combined_verifier_handles_shared_idempotent_managed_store(self) -> None:
+        service = ContinuityService(SQLiteLedgerStore(":memory:"))
+        handler = make_handler(lambda: service)
+
+        def shared_store_request(
+            method: str,
+            url: str,
+            body: dict[str, object] | None,
+        ) -> tuple[int, dict[str, str], bytes]:
+            route = "/" + url.split("/", 3)[-1] if url.count("/") >= 3 else "/"
+            event = {
+                "rawPath": route,
+                "requestContext": {"http": {"method": method}},
+                "body": json.dumps(body or {}),
+            }
+            response = handler(event, None)
+            return (
+                int(response["statusCode"]),
+                dict(response["headers"]),
+                str(response["body"]).encode("utf-8"),
+            )
+
+        receipt = await collect_managed_stack_evidence(
+            lambda: object(),
+            FakeMCPClient(),
+            "https://synthetic-demo.example",
+            service=service,
+            bootstrapper=lambda _factory: dict.fromkeys(REQUIRED_ASSERTIONS, True),
+            request=shared_store_request,
+        )
+        self.assertTrue(all(receipt["assertions"].values()))
+        self.assertEqual(
+            receipt["components"]["agent"]["action"],
+            "inspect_ingest_validation",
+        )
 
     async def test_no_combined_receipt_is_written_for_incomplete_evidence(self) -> None:
         def failed_demo(
