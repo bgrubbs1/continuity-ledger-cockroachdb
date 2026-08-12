@@ -40,6 +40,7 @@ class PublicReleaseTests(unittest.TestCase):
                 "artifacts/public/local-cockroach-contract.json",
                 "docs/LOCAL_VERIFICATION_2026-08-09.md",
                 "scripts/build_public_release.py",
+                "scripts/smoke_lambda_container.py",
                 "scripts/verify_local_cockroach.py",
                 "src/continuity_ledger/release.py",
                 "tests/test_release.py",
@@ -81,7 +82,8 @@ class PublicReleaseTests(unittest.TestCase):
                 "docker build",
                 "cloud_evidence_claimed",
                 "functions/function/invocations",
-                '"status": "ok", "mode": "synthetic-only"',
+                "python scripts/smoke_lambda_container.py",
+                "ALLOW_LOCAL_SQLITE=true",
             ):
                 self.assertIn(required, workflow)
             for forbidden in (

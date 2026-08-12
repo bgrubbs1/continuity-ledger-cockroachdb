@@ -11,13 +11,13 @@
     },
     {
       "path": ".env.example",
-      "bytes": 185,
-      "sha256": "13d73e36b16a57c108c71f4c086e562dfcafbac85b15744121be0fcbf9582674"
+      "bytes": 464,
+      "sha256": "fdc2a34270d13d15683e1f1342d02549170c58e531e4547eed19007bf3e0d38c"
     },
     {
       "path": ".github/workflows/public-release.yml",
-      "bytes": 4701,
-      "sha256": "6c8b13392af672ba9855b81ef2e5307990282a5668a2132e63c369e79dbabdf3"
+      "bytes": 4541,
+      "sha256": "ed262fccb5c5701152ef350df853223510d7fe2e0c3a6e572c4b3d0c9fe52133"
     },
     {
       "path": ".gitignore",
@@ -36,8 +36,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4310,
-      "sha256": "b6e86b8563ca00dffdc21d553de33842bc0b0ed275ec41422b9542c93ebd9110"
+      "bytes": 6526,
+      "sha256": "01ae3dc56abeab272f8e0f49be98132bb560f170281eeaaad60ba3c3d8b5fd16"
     },
     {
       "path": "artifacts/public/local-cockroach-contract.json",
@@ -51,8 +51,8 @@
     },
     {
       "path": "deployment/template.yaml",
-      "bytes": 1843,
-      "sha256": "5acfb729cd9e74f59d5b37a17906ee70ee15720da47bbd6371ca0a07a4cff28d"
+      "bytes": 3464,
+      "sha256": "e54e5dacbae1beeda7b56805982338d24390657f0012d258907b94ccfe4158ef"
     },
     {
       "path": "docs/LOCAL_VERIFICATION_2026-08-09.md",
@@ -60,9 +60,19 @@
       "sha256": "00ce6f2817853d1745b3e011240693014ae469c15f1714621f860a0ac5ce714e"
     },
     {
+      "path": "docs/LOCAL_VERIFICATION_2026-08-11.md",
+      "bytes": 2759,
+      "sha256": "79d28e2362b3f0d6f6eb411e8a0bb0699db7203bf8dd266b28347d1fac10fa6a"
+    },
+    {
       "path": "pyproject.toml",
-      "bytes": 494,
-      "sha256": "9b8d2c9be70ce6ff2b39734f2fa3779d8366b8701cb0811339c0a8ff36eb9162"
+      "bytes": 510,
+      "sha256": "d9d332aaf042096b9b373373c4a006ffd83aa72a3293d0a3fb54add6bc96ec60"
+    },
+    {
+      "path": "scripts/bootstrap_managed_schema.py",
+      "bytes": 1894,
+      "sha256": "b333d1423b951c7e2d7623003e04fc1eb3114fb7673d92cebe8a2046d120e07c"
     },
     {
       "path": "scripts/build_public_release.py",
@@ -70,9 +80,24 @@
       "sha256": "381d07a3554d953b16c8f5c2c8bf1a1c792f838c5900c933edc70f84f2317784"
     },
     {
+      "path": "scripts/put_aws_database_parameter.py",
+      "bytes": 2436,
+      "sha256": "b21adb2b5a622ef18f02001611dbda55d51c692f2eb173277953ce710cde0948"
+    },
+    {
+      "path": "scripts/smoke_lambda_container.py",
+      "bytes": 4008,
+      "sha256": "369f1f34e2c5bc6f881dcfbe8f327e1b461908da841f8c1b265ae41ffcade11f"
+    },
+    {
       "path": "scripts/verify_local_cockroach.py",
       "bytes": 10433,
       "sha256": "eb7b4982d3dcadcee95480016601756167962f47ea3f73b38cad07a8b0b5c59e"
+    },
+    {
+      "path": "scripts/verify_managed_mcp.py",
+      "bytes": 1683,
+      "sha256": "c6f96e3df53ee649f28eeb606fc05b2af213358ef34b0f162633e64ee11675a1"
     },
     {
       "path": "src/continuity_ledger/__init__.py",
@@ -80,9 +105,24 @@
       "sha256": "6e2e648fee9c18b7635480e0c8bec8bd184154034c59c755b7e79c7ddcd09279"
     },
     {
+      "path": "src/continuity_ledger/agent.py",
+      "bytes": 4682,
+      "sha256": "7d6d8142c533bc343b224858402e7b4fe26439976457dae85c7addcbb107f66a"
+    },
+    {
+      "path": "src/continuity_ledger/aws_config.py",
+      "bytes": 1255,
+      "sha256": "d02275af1f7b5d2a14e6e24601d62a6827f0353c71c718a66a1502f1d9bdd7ec"
+    },
+    {
       "path": "src/continuity_ledger/cockroach.py",
       "bytes": 4789,
       "sha256": "3e39654254ab5c0b3382ca1159d781d5aa43aab010071cd1e9f45d1c77e9d27a"
+    },
+    {
+      "path": "src/continuity_ledger/demo.py",
+      "bytes": 6769,
+      "sha256": "07589dd16dd86a54ae422242e31313b32a55935e884e3d2580baf6680ac5815c"
     },
     {
       "path": "src/continuity_ledger/embedding.py",
@@ -91,13 +131,18 @@
     },
     {
       "path": "src/continuity_ledger/lambda_handler.py",
-      "bytes": 4058,
-      "sha256": "50deb26c90eae16b0297110b9424a74524ce88ea10d14a5aeffa6a98a22601f2"
+      "bytes": 6924,
+      "sha256": "dda6d5c9660880e37784de809fd18fbe43bc0f58fe4c7254e2ceb7b2b1c39fb5"
+    },
+    {
+      "path": "src/continuity_ledger/managed_bootstrap.py",
+      "bytes": 5413,
+      "sha256": "594301c49472bd481b9b4c432267dd57ac6976e62bba4d08fb90ac3b34cbd338"
     },
     {
       "path": "src/continuity_ledger/mcp.py",
-      "bytes": 1094,
-      "sha256": "bc74843417a06c30350bee5c450150b77910083bc683af3b7482c16e3dd21364"
+      "bytes": 7079,
+      "sha256": "6feeeec63df09d3b0f546bbd66aa702b4ff921f2e8e7cf474634ee3010757b08"
     },
     {
       "path": "src/continuity_ledger/models.py",
@@ -125,14 +170,19 @@
       "sha256": "b7fbce508970244cbf26a28f16d53b487744f845e3ed97177bf74364436785fd"
     },
     {
+      "path": "tests/test_aws_config.py",
+      "bytes": 2687,
+      "sha256": "ec8754336fc7b6706543172c8c46523cb2f7cdd91ed0ce43274b6bc298ac8a59"
+    },
+    {
       "path": "tests/test_continuity_ledger.py",
-      "bytes": 9200,
-      "sha256": "4cc350b32586703bd8d7d3faee873702271949907af65ee86ae3dff3e83afc38"
+      "bytes": 15333,
+      "sha256": "12ebbc04e8d4e4ac7aaa1890f3f236352a57d73cec117445808ee9678764ef73"
     },
     {
       "path": "tests/test_deployment_contract.py",
-      "bytes": 2105,
-      "sha256": "3ec3eb7cedffd59220d03632e03103eebe20db2b21b985bc0f5873009b5ed80c"
+      "bytes": 3028,
+      "sha256": "afdcb9a959e99c1c790a6230c5c47344b2403c8538e835ad22337e39a4f8e2d8"
     },
     {
       "path": "tests/test_local_cockroach_verifier.py",
@@ -140,9 +190,19 @@
       "sha256": "6137d1dd25f2485345625d102cb15440f49dc65ede54ded60817cea975a05e6b"
     },
     {
+      "path": "tests/test_managed_bootstrap.py",
+      "bytes": 4435,
+      "sha256": "bd9f009ef2c4e88d6473a47b57dca16cb1ab084e4bf4352e5678342773eb3360"
+    },
+    {
+      "path": "tests/test_managed_mcp.py",
+      "bytes": 5658,
+      "sha256": "57d6e5cb6396c57deb96db8cf37cbd00e3458918364d8dcd8e00ecd768ba865b"
+    },
+    {
       "path": "tests/test_release.py",
-      "bytes": 6559,
-      "sha256": "3a9b43078b115245bafccfd8815c14f6948e72045468110ac97cf5f669915e52"
+      "bytes": 6655,
+      "sha256": "5985713af455c18eab75c35750459b41a168f136cd66abefb49d3129b11c81df"
     }
   ],
   "never_public_parts": [

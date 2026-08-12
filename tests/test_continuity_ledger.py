@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from continuity_ledger.agent import ContinuityAgent
 from continuity_ledger.cockroach import SCHEMA_SQL, run_with_serialization_retry
 from continuity_ledger.embedding import feature_hash
 from continuity_ledger.lambda_handler import make_handler
@@ -78,6 +79,55 @@ class LedgerContractTests(unittest.TestCase):
 
 
 class IntegrationBoundaryTests(unittest.TestCase):
+    def test_agent_retrieves_cites_acts_and_records_decision(self) -> None:
+        service = ContinuityService(SQLiteLedgerStore())
+        service.record(event(
+            "tenant_alpha",
+            "incident_prior",
+            1,
+            "Synthetic ingest checksum retries delayed the package",
+            "prior_1",
+        ))
+
+        outcome = ContinuityAgent(service).run(
+            tenant_id="tenant_alpha",
+            incident_id="incident_current",
+            sequence=1,
+            observation="Synthetic ingest checksum delay",
+            idempotency_key="current_1",
+            created_at="2026-08-11T00:00:00+00:00",
+        )
+
+        self.assertEqual(outcome.action, "inspect_ingest_validation")
+        self.assertEqual(outcome.citations, ("incident_prior:1",))
+        self.assertTrue(outcome.observation_recorded)
+        self.assertTrue(outcome.decision_recorded)
+        decisions = service.recall("tenant_alpha", "agent action ingest", 5)
+        self.assertTrue(any(result.event.kind == "decision" for result in decisions))
+
+    def test_agent_abstains_when_other_tenant_has_only_matching_memory(self) -> None:
+        service = ContinuityService(SQLiteLedgerStore())
+        service.record(event(
+            "tenant_beta",
+            "incident_hidden",
+            1,
+            "Synthetic ingest checksum retries delayed the package",
+            "hidden_1",
+        ))
+
+        outcome = ContinuityAgent(service).run(
+            tenant_id="tenant_alpha",
+            incident_id="incident_current",
+            sequence=1,
+            observation="Synthetic ingest checksum delay",
+            idempotency_key="current_2",
+            created_at="2026-08-11T00:00:00+00:00",
+        )
+
+        self.assertEqual(outcome.action, "request_more_evidence")
+        self.assertEqual(outcome.citations, ())
+        self.assertEqual(outcome.recalled_count, 0)
+
     def test_schema_has_vector_index_and_tenant_key(self) -> None:
         self.assertIn("VECTOR(32)", SCHEMA_SQL)
         self.assertIn("CREATE VECTOR INDEX", SCHEMA_SQL)
@@ -113,7 +163,11 @@ class IntegrationBoundaryTests(unittest.TestCase):
         with patch.dict(os.environ, {"COCKROACH_MCP_URL": "http://example.invalid", "COCKROACH_MCP_TOKEN": "token"}, clear=True):
             with self.assertRaises(ValueError):
                 ManagedMCPConfig.from_environment()
-        config = ManagedMCPConfig("https://cockroachlabs.cloud/mcp", "super-secret")
+        config = ManagedMCPConfig(
+            "https://cockroachlabs.cloud/mcp",
+            "super-secret",
+            "f98e5aba-7da3-4e73-b201-51111c421549",
+        )
         self.assertNotIn("super-secret", json.dumps(config.safe_summary()))
         self.assertTrue(config.safe_summary()["read_only"])
 
@@ -146,6 +200,105 @@ class IntegrationBoundaryTests(unittest.TestCase):
         )
         self.assertEqual(recalled["statusCode"], 200)
         self.assertEqual(json.loads(recalled["body"])["results"][0]["incident_id"], "incident_orbit")
+
+    def test_lambda_agent_run_uses_verified_tenant_and_returns_citations(self) -> None:
+        service = ContinuityService(SQLiteLedgerStore())
+        service.record(event(
+            "tenant_alpha",
+            "incident_prior",
+            1,
+            "Synthetic worker capacity caused transcode delay",
+            "prior_capacity",
+        ))
+        handler = make_handler(lambda: service)
+        response = handler(
+            {
+                "rawPath": "/agent/run",
+                "requestContext": {
+                    "http": {"method": "POST"},
+                    "authorizer": {"jwt": {"claims": {"tenant_id": "tenant_alpha"}}},
+                },
+                "body": json.dumps(
+                    {
+                        "incident_id": "incident_current",
+                        "sequence": 1,
+                        "observation": "Synthetic transcode worker delay",
+                        "idempotency_key": "agent_run_1",
+                        "created_at": "2026-08-11T00:00:00+00:00",
+                    }
+                ),
+            },
+            None,
+        )
+        payload = json.loads(response["body"])
+        self.assertEqual(response["statusCode"], 200)
+        self.assertEqual(payload["action"], "inspect_transcode_capacity")
+        self.assertEqual(payload["citations"], ["incident_prior:1"])
+        self.assertTrue(payload["decision_recorded"])
+
+    def test_public_demo_requires_seed_then_retrieves_cites_and_acts(self) -> None:
+        service = ContinuityService(SQLiteLedgerStore())
+        handler = make_handler(lambda: service)
+        run_event = {
+            "rawPath": "/demo/run",
+            "requestContext": {"http": {"method": "POST"}},
+            "body": json.dumps({"scenario_id": "ingest_backlog"}),
+        }
+        before = handler(run_event, None)
+        self.assertEqual(before["statusCode"], 409)
+
+        seeded = handler(
+            {
+                "rawPath": "/demo/seed",
+                "requestContext": {"http": {"method": "POST"}},
+                "body": "{}",
+            },
+            None,
+        )
+        self.assertEqual(seeded["statusCode"], 200)
+        self.assertEqual(json.loads(seeded["body"])["memory"]["inserted"], 3)
+
+        after = handler(run_event, None)
+        payload = json.loads(after["body"])
+        self.assertEqual(after["statusCode"], 200)
+        self.assertEqual(payload["action"], "inspect_ingest_validation")
+        self.assertEqual(payload["citations"], ["prior_ingest:1"])
+        self.assertEqual(payload["data_boundary"], "fixed fictional scenario")
+
+        repeated = handler(run_event, None)
+        repeated_payload = json.loads(repeated["body"])
+        self.assertEqual(repeated["statusCode"], 200)
+        self.assertEqual(repeated_payload["action"], "inspect_ingest_validation")
+        self.assertEqual(repeated_payload["citations"], ["prior_ingest:1"])
+        self.assertFalse(repeated_payload["decision_persisted"])
+
+    def test_public_demo_rejects_non_allowlisted_scenario(self) -> None:
+        service = ContinuityService(SQLiteLedgerStore())
+        handler = make_handler(lambda: service)
+        response = handler(
+            {
+                "rawPath": "/demo/run",
+                "requestContext": {"http": {"method": "POST"}},
+                "body": json.dumps(
+                    {
+                        "scenario_id": "arbitrary",
+                        "observation": "this field must never be accepted",
+                    }
+                ),
+            },
+            None,
+        )
+        self.assertEqual(response["statusCode"], 400)
+
+    def test_public_demo_home_is_self_contained_and_has_no_text_input(self) -> None:
+        handler = make_handler(lambda: self.fail("home must not access persistence"))
+        response = handler(
+            {"rawPath": "/", "requestContext": {"http": {"method": "GET"}}},
+            None,
+        )
+        self.assertEqual(response["statusCode"], 200)
+        self.assertIn("Continuity Ledger", response["body"])
+        self.assertNotIn("<input", response["body"])
 
     def test_lambda_rejects_missing_identity_before_store_access(self) -> None:
         handler = make_handler(lambda: self.fail("unauthorized request must not access persistence"))

@@ -12,7 +12,7 @@ authors = [{name = "Bradley Grubbs"}]
 dependencies = []
 
 [project.optional-dependencies]
-cloud = ["psycopg[binary]>=3.2,<4", "boto3>=1.35,<2"]
+cloud = ["psycopg[binary]>=3.2,<4", "boto3>=1.35,<2", "mcp>=1.29,<2"]
 dev = ["pyyaml>=6,<7"]
 
 [tool.setuptools.packages.find]

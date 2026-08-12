@@ -3,10 +3,11 @@ Transform: AWS::Serverless-2016-10-31
 Description: Continuity Ledger synthetic-only contest deployment
 
 Parameters:
-  DatabaseUrl:
+  DatabaseParameterName:
     Type: String
-    NoEcho: true
-    Description: Contest-only CockroachDB connection string supplied at deploy time
+    Default: /continuity-ledger/database-url
+    AllowedPattern: '^/[A-Za-z0-9_./-]+$'
+    Description: Encrypted Standard SSM parameter containing the contest-only database URL
   JwtIssuer:
     Type: String
     AllowedPattern: "^https://.+"
@@ -39,8 +40,14 @@ Resources:
       MemorySize: 512
       Environment:
         Variables:
-          DATABASE_URL: !Ref DatabaseUrl
+          DATABASE_PARAMETER_NAME: !Ref DatabaseParameterName
           ALLOW_LOCAL_SQLITE: "false"
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${DatabaseParameterName}
       Events:
         Health:
           Type: HttpApi
@@ -48,6 +55,38 @@ Resources:
             ApiId: !Ref ContinuityLedgerApi
             Path: /healthz
             Method: GET
+            Auth:
+              Authorizer: NONE
+        DemoHome:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /
+            Method: GET
+            Auth:
+              Authorizer: NONE
+        DemoScenarios:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /demo/scenarios
+            Method: GET
+            Auth:
+              Authorizer: NONE
+        DemoSeed:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /demo/seed
+            Method: POST
+            Auth:
+              Authorizer: NONE
+        DemoRun:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /demo/run
+            Method: POST
             Auth:
               Authorizer: NONE
         Events:
@@ -62,7 +101,21 @@ Resources:
             ApiId: !Ref ContinuityLedgerApi
             Path: /search
             Method: POST
+        AgentRun:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ContinuityLedgerApi
+            Path: /agent/run
+            Method: POST
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ..
       DockerTag: python3.12-v1
+
+Outputs:
+  DemoUrl:
+    Description: Public fixed-scenario demo URL
+    Value: !Sub https://${ContinuityLedgerApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/
+  FunctionName:
+    Description: Deployed Lambda function name
+    Value: !Ref ContinuityLedgerFunction

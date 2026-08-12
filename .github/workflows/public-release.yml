@@ -91,6 +91,8 @@ jobs:
         run: |
           docker run -d --name continuity-ledger-ci \
             -p 127.0.0.1:18082:8080 \
+            -e ALLOW_LOCAL_SQLITE=true \
+            -e SQLITE_PATH=/tmp/demo.sqlite \
             continuity-ledger:ci
           for attempt in $(seq 1 30); do
             if curl --fail --silent \
@@ -106,14 +108,7 @@ jobs:
             fi
             sleep 1
           done
-          python - <<'PY'
-          import json
-
-          response = json.load(open("/tmp/health.json", encoding="utf-8"))
-          body = json.loads(response["body"])
-          assert response["statusCode"] == 200
-          assert body == {"status": "ok", "mode": "synthetic-only"}
-          PY
+          python scripts/smoke_lambda_container.py
 
       - name: Show container logs on failure
         if: failure()
