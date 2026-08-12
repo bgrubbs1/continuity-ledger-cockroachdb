@@ -36,8 +36,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6526,
-      "sha256": "01ae3dc56abeab272f8e0f49be98132bb560f170281eeaaad60ba3c3d8b5fd16"
+      "bytes": 6975,
+      "sha256": "164abdc1906acef64a570c7de34854491a78475cd5211f8c5952f0e6cc004cea"
     },
     {
       "path": "artifacts/public/local-cockroach-contract.json",
@@ -56,8 +56,8 @@
     },
     {
       "path": "docs/DEPLOYMENT_RUNBOOK.md",
-      "bytes": 5554,
-      "sha256": "25ca2b6c61c7e2fe40eb7d9aea2c14ccfeeef6bdc27bdfe4b21dda755028bbc8"
+      "bytes": 6739,
+      "sha256": "f47c802c86a232bd3e5946c19a9c3eaaf48bcc85ee07bad5a977a7b2a4702292"
     },
     {
       "path": "docs/LOCAL_VERIFICATION_2026-08-09.md",
@@ -66,8 +66,8 @@
     },
     {
       "path": "docs/LOCAL_VERIFICATION_2026-08-11.md",
-      "bytes": 2759,
-      "sha256": "79d28e2362b3f0d6f6eb411e8a0bb0699db7203bf8dd266b28347d1fac10fa6a"
+      "bytes": 2836,
+      "sha256": "22bd8badfc374a623e63bcbae60f820c9d6f9055452ab91175f47d6fa67f97a6"
     },
     {
       "path": "pyproject.toml",
@@ -76,8 +76,8 @@
     },
     {
       "path": "scripts/bootstrap_managed_schema.py",
-      "bytes": 1894,
-      "sha256": "b333d1423b951c7e2d7623003e04fc1eb3114fb7673d92cebe8a2046d120e07c"
+      "bytes": 1895,
+      "sha256": "1595e55af66724fd69bc33a5565e64203202d526271679218de5b5583d5a312e"
     },
     {
       "path": "scripts/build_public_release.py",
@@ -101,8 +101,13 @@
     },
     {
       "path": "scripts/verify_managed_mcp.py",
-      "bytes": 1683,
-      "sha256": "c6f96e3df53ee649f28eeb606fc05b2af213358ef34b0f162633e64ee11675a1"
+      "bytes": 1684,
+      "sha256": "efc9c9e827cc0f6f6a119747bc8e54ee0c104d880680511e0fc4b22bba915e1e"
+    },
+    {
+      "path": "scripts/verify_managed_stack.py",
+      "bytes": 1928,
+      "sha256": "3f4ac7995a04d3805dc4ac00c2baa553bfe9272a65d5cfa24ccb5ddd4d209516"
     },
     {
       "path": "src/continuity_ledger/__init__.py",
@@ -145,6 +150,11 @@
       "sha256": "594301c49472bd481b9b4c432267dd57ac6976e62bba4d08fb90ac3b34cbd338"
     },
     {
+      "path": "src/continuity_ledger/managed_evidence.py",
+      "bytes": 11666,
+      "sha256": "b1e79d154ddfa415206917489d44a934b924f8eb18d1219fd0d9b5c4ff4a80a6"
+    },
+    {
       "path": "src/continuity_ledger/mcp.py",
       "bytes": 7079,
       "sha256": "6feeeec63df09d3b0f546bbd66aa702b4ff921f2e8e7cf474634ee3010757b08"
@@ -182,7 +192,7 @@
     {
       "path": "tests/test_continuity_ledger.py",
       "bytes": 15333,
-      "sha256": "12ebbc04e8d4e4ac7aaa1890f3f236352a57d73cec117445808ee9678764ef73"
+      "sha256": "7bcad4726d87871fcb5b2da1958a668eb0c3b2aa610980c7b7de4a6e502f5594"
     },
     {
       "path": "tests/test_deployment_contract.py",
@@ -200,9 +210,14 @@
       "sha256": "bd9f009ef2c4e88d6473a47b57dca16cb1ab084e4bf4352e5678342773eb3360"
     },
     {
+      "path": "tests/test_managed_evidence.py",
+      "bytes": 7931,
+      "sha256": "b333cf37235b42b7756d322fd125376c94d7d3efd2d1bc88ba00b938ba00b22d"
+    },
+    {
       "path": "tests/test_managed_mcp.py",
       "bytes": 5658,
-      "sha256": "57d6e5cb6396c57deb96db8cf37cbd00e3458918364d8dcd8e00ecd768ba865b"
+      "sha256": "03f14da755021f2a3be79970cc382c98ee91fffd30aa07cfaddfc82f2fc8b759"
     },
     {
       "path": "tests/test_release.py",

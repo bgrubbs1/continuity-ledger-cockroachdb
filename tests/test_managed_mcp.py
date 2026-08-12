@@ -17,7 +17,7 @@ from continuity_ledger.mcp import (
 )
 
 
-CLUSTER_ID = "f98e5aba-7da3-4e73-b201-51111c421549"
+CLUSTER_ID = "11111111-2222-4333-8444-555555555555"
 
 
 class FakeSession:

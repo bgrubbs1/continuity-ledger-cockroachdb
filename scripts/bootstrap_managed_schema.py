@@ -22,7 +22,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--receipt",
         type=Path,
-        default=Path("artifacts/public/managed-schema-bootstrap.json"),
+        default=Path("artifacts/private/managed-schema-bootstrap.json"),
         help="Secret-free receipt destination (DATABASE_URL is never written).",
     )
     args = parser.parse_args(argv)

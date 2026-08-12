@@ -1,39 +1,45 @@
 #!/usr/bin/env python3
-"""Run one authorized, read-only CockroachDB Cloud MCP inspection."""
+"""Verify the authorized managed stack and write one secret-free receipt."""
 
 from __future__ import annotations
 
 import argparse
 import asyncio
 import json
+import os
 from pathlib import Path
 import sys
 
-from continuity_ledger.mcp import (
-    ManagedMCPClient,
-    ManagedMCPConfig,
-    write_mcp_receipt,
+from continuity_ledger.cockroach import psycopg_connection_factory
+from continuity_ledger.managed_evidence import (
+    collect_managed_stack_evidence,
+    write_managed_stack_receipt,
 )
+from continuity_ledger.mcp import ManagedMCPClient, ManagedMCPConfig
 
 
 async def _run(args: argparse.Namespace) -> tuple[Path, str]:
-    config = ManagedMCPConfig.from_environment()
-    arguments = json.loads(args.arguments_json)
-    if not isinstance(arguments, dict):
-        raise ValueError("--arguments-json must decode to a JSON object")
-    receipt = await ManagedMCPClient(config).inspect(args.tool, arguments)
-    digest = write_mcp_receipt(args.receipt, receipt)
+    database_url = os.environ.get("DATABASE_URL", "")
+    demo_origin = os.environ.get("CONTINUITY_DEMO_URL", "")
+    if not database_url:
+        raise ValueError("DATABASE_URL is required")
+    if not demo_origin:
+        raise ValueError("CONTINUITY_DEMO_URL is required")
+    receipt = await collect_managed_stack_evidence(
+        psycopg_connection_factory(database_url),
+        ManagedMCPClient(ManagedMCPConfig.from_environment()),
+        demo_origin,
+    )
+    digest = write_managed_stack_receipt(args.receipt, receipt)
     return args.receipt, digest
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tool", default="list_databases")
-    parser.add_argument("--arguments-json", default="{}")
     parser.add_argument(
         "--receipt",
         type=Path,
-        default=Path("artifacts/private/managed-mcp-readonly.json"),
+        default=Path("artifacts/private/managed-stack-evidence.json"),
     )
     args = parser.parse_args(argv)
     try:

@@ -82,7 +82,7 @@ From a logged-out browser:
 2. seed the fixed fictional memories;
 3. run `Ingest backlog` and confirm the action cites `prior_ingest:1`;
 4. repeat it and confirm the decision is reused rather than duplicated;
-5. run the ambiguous review scenario and confirm the agent requests evidence instead of inventing a root cause;
+5. run the review-status scenario and confirm the agent recommends a fresh status check without inventing a root cause;
 6. confirm arbitrary text cannot be entered;
 7. confirm unauthenticated protected routes remain rejected.
 
@@ -101,7 +101,21 @@ Load `COCKROACH_MCP_URL`, `COCKROACH_CLUSTER_ID`, and `COCKROACH_MCP_TOKEN` into
 
 The client discovers the server tools, refuses any tool outside its read-only allowlist, executes the named operation, and writes only structural result metadata. Promote the receipt publicly only after a separate secret and privacy scan.
 
-## 7. Final evidence and cleanup
+## 7. Collect the combined managed-stack receipt
+
+After the schema, deployment, and MCP credential are available in the current process, set the public `DemoUrl` without printing any other value:
+
+```powershell
+$env:CONTINUITY_DEMO_URL = 'https://replace-with-the-deployed-demo-origin'
+.\.venv\Scripts\python scripts\verify_managed_stack.py `
+  --receipt artifacts\private\managed-stack-evidence.json
+```
+
+This is the decisive end-to-end verifier. It bootstraps and verifies the managed schema, runs the fixed synthetic ingest scenario through CockroachDB retrieve-decide-cite-record memory, performs the allowlisted `list_databases` MCP call, and checks the public AWS demo plus rejection of anonymous access to the protected agent route. The receipt is written atomically only if every phase passes. It retains only structural assertions, counts, action/citation metadata, hashes, and a hash of the demo origin—never the origin, database URL, cluster ID, token, account ID, or raw service output.
+
+Keep the first combined receipt private until it passes an independent privacy/secret scan. Do not describe the managed stack as verified merely because this command exists.
+
+## 8. Final evidence and cleanup
 
 - rerun the full local suite and public-release builder;
 - verify all public receipts by hash and reopen them;
