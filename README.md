@@ -14,6 +14,7 @@ The repository uses only fixed fictional incidents. It contains no employer, cus
 - an AWS Lambda/API Gateway handler with JWT-derived tenant identity;
 - encrypted database-URL retrieval from AWS Systems Manager Parameter Store for managed deployment;
 - a self-contained public demo with three fixed synthetic scenarios and no arbitrary text input;
+- an all-or-nothing managed-stack verifier covering schema, agent memory, read-only MCP, and the logged-out AWS demo without retaining endpoints or credentials;
 - an allowlisted, manifest-hashed public-release builder and credential-free CI verification.
 
 The feature hasher is a deterministic demo encoder, not a trained embedding model or an LLM. The agentic behavior is the evidence-bound retrieve-decide-cite-record loop. No managed CockroachDB call, AWS deployment, availability result, latency result, or contest submission is claimed by this repository yet.
@@ -27,7 +28,7 @@ The Lambda handler exposes these public synthetic-demo routes:
 - `POST /demo/seed` - idempotently seeds three synthetic handoffs;
 - `POST /demo/run` - runs one allowlisted scenario through the memory/action loop.
 
-Protected routes (`/events`, `/search`, and `/agent/run`) derive `tenant_id` from the API Gateway JWT claim. Supplying a different tenant in a request body is rejected. The public demo never accepts arbitrary incident text and always uses the fixed tenant `demo_studio`.
+Protected routes (`/events`, `/search`, and `/agent/run`) derive `tenant_id` from the API Gateway JWT claim. Supplying a different tenant in a request body is rejected. The public demo never accepts arbitrary incident text and always uses the fixed tenant `demo_tenant`.
 
 ## Local verification
 
@@ -71,7 +72,7 @@ The verifier starts the pinned `cockroachdb/cockroach:v26.2.3` image as a loopba
 
 The managed Lambda reads its database URL from an encrypted AWS Systems Manager Parameter Store `SecureString` named by `DATABASE_PARAMETER_NAME`. The direct `DATABASE_URL` environment variable is accepted only for explicit local verification. The helper `scripts/put_aws_database_parameter.py` writes a Standard-tier encrypted parameter and emits a receipt that never includes the value.
 
-`scripts/bootstrap_managed_schema.py` initializes and verifies the CockroachDB schema idempotently. `scripts/verify_managed_mcp.py` performs one allowlisted, read-only Managed MCP operation and writes a secret-free receipt. These scripts require owner-authorized contest accounts and are not evidence that a managed run has happened.
+`scripts/bootstrap_managed_schema.py` initializes and verifies the CockroachDB schema idempotently. `scripts/verify_managed_mcp.py` performs one allowlisted, read-only Managed MCP operation. After AWS deployment, `scripts/verify_managed_stack.py` combines those contracts with a real retrieve-decide-cite-record round trip and logged-out hosted-demo checks. It writes a receipt only after every assertion succeeds, fingerprints rather than records the demo origin, and rejects connection or credential material. These scripts require owner-authorized contest accounts and are not evidence that a managed run has happened.
 
 ## Build the public repository candidate
 

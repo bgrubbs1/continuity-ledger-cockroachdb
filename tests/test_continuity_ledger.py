@@ -166,7 +166,7 @@ class IntegrationBoundaryTests(unittest.TestCase):
         config = ManagedMCPConfig(
             "https://cockroachlabs.cloud/mcp",
             "super-secret",
-            "f98e5aba-7da3-4e73-b201-51111c421549",
+            "11111111-2222-4333-8444-555555555555",
         )
         self.assertNotIn("super-secret", json.dumps(config.safe_summary()))
         self.assertTrue(config.safe_summary()["read_only"])
