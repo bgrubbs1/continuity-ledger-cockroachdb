@@ -55,6 +55,11 @@
       "sha256": "e54e5dacbae1beeda7b56805982338d24390657f0012d258907b94ccfe4158ef"
     },
     {
+      "path": "docs/DEPLOYMENT_RUNBOOK.md",
+      "bytes": 5554,
+      "sha256": "25ca2b6c61c7e2fe40eb7d9aea2c14ccfeeef6bdc27bdfe4b21dda755028bbc8"
+    },
+    {
       "path": "docs/LOCAL_VERIFICATION_2026-08-09.md",
       "bytes": 3068,
       "sha256": "00ce6f2817853d1745b3e011240693014ae469c15f1714621f860a0ac5ce714e"
@@ -201,8 +206,8 @@
     },
     {
       "path": "tests/test_release.py",
-      "bytes": 6655,
-      "sha256": "5985713af455c18eab75c35750459b41a168f136cd66abefb49d3129b11c81df"
+      "bytes": 6782,
+      "sha256": "1faa4b5d797de04d4002c54e9f83de2398b6244b76c94a3e5a95ed4e643231bc"
     }
   ],
   "never_public_parts": [

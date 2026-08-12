@@ -57,7 +57,10 @@ class PublicReleaseTests(unittest.TestCase):
             }
             for forbidden in (
                 ".env",
+                "DEVPOST_SUBMISSION_DRAFT.md",
                 "FINAL_OWNER_HANDOFF.txt",
+                "RUBRIC_AUDIT_DRAFT.md",
+                "VIDEO_STORYBOARD.md",
                 "1 - Official Devpost contest.url",
                 "2 - CockroachDB Cloud signup.url",
                 "3 - AWS Free Tier.url",
