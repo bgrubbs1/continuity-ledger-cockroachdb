@@ -219,11 +219,15 @@ async def collect_managed_stack_evidence(
         bootstrapper(connection_factory),
         verified_at=when,
     )
+    # Exercise the public endpoint before the direct store proof. Both use the
+    # same fixed idempotency keys in a real deployment; this ordering proves the
+    # hosted write first and then verifies those records directly without
+    # misclassifying a safe replay as a failed write.
+    demo = verify_public_demo(demo_origin, request=request)
     managed_service = service or ContinuityService(CockroachLedgerStore(connection_factory))
     agent = verify_agent_memory_round_trip(managed_service)
     mcp = await mcp_client.inspect("list_databases", {}, verified_at=when)
     validate_mcp_receipt(mcp)
-    demo = verify_public_demo(demo_origin, request=request)
 
     assertions = {"schema_verified": True, **agent["assertions"]}
     assertions["managed_mcp_read_only_call_verified"] = True

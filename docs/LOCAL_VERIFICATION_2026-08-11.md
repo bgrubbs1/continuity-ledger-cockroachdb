@@ -5,7 +5,7 @@ This record covers credential-free local checks only. It is not evidence of a ma
 ## Python and policy contracts
 
 - Python 3.12 virtual environment: used.
-- `python -m unittest discover -s tests -v`: 51/51 passed.
+- `python -m unittest discover -s tests -v`: 52/52 passed.
 - `python -m compileall -q src tests scripts`: passed.
 - `python -m pip check`: no broken requirements.
 - Covered behavior includes tenant-isolated append/search, deterministic embeddings, idempotency, restart persistence, private-marker rejection, bounded serialization retry, JWT-derived tenant identity, cross-tenant spoof rejection, the retrieve-decide-cite-record agent loop, fixed public-demo scenarios, read-only Managed MCP discovery/call enforcement, secret-free Managed MCP receipts, encrypted SSM Parameter Store loading/writing, managed schema bootstrap receipts, the all-or-nothing managed-stack evidence contract with negative-path tests, release exclusions, and deterministic release manifests.
